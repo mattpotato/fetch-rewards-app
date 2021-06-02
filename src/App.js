@@ -1,23 +1,46 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
+import List from "./components/List";
+import "./App.css";
 
 function App() {
+  const [data, setData] = useState({});
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const request = await fetch(
+          "https://fetch-hiring.s3.amazonaws.com/hiring.json"
+        );
+        const items = await request.json();
+        const lists = {};
+
+        items.forEach((item) => {
+          if (!lists[item.listId]) {
+            lists[item.listId] = [];
+          }
+
+          lists[item.listId].push({
+            id: item.id,
+            listId: item.listId,
+            name: item.name,
+          });
+        });
+
+        setData(lists);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    loadData();
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      {Object.keys(data)
+        .sort()
+        .map((listId, index) => {
+          return <List key={index} listData={data[listId]} listId={listId} />;
+        })}
     </div>
   );
 }
