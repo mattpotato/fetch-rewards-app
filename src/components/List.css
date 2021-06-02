@@ -1,0 +1,11 @@
+.list-container {
+  width: 300px;
+  border: 1px solid #dfe1e5;
+  margin: 20px;
+  padding: 10px;
+}
+
+.items {
+  max-height: 300px;
+  overflow-y: scroll;
+}
